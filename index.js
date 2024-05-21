@@ -65,15 +65,12 @@ app.post('/api/upload', (req, res) => {
     try {
       const newFile = new File({ name: originalname, type: mimetype, size: size });
       await newFile.save();
+      // Send JSON response with file metadata
       res.json({ name: originalname, type: mimetype, size: size });
     } catch (error) {
       console.error('Error saving file metadata to MongoDB:', error);
+      // Send JSON response in case of error
       res.status(500).json({ error: 'Error saving file metadata to MongoDB' });
     }
   });
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
 });
