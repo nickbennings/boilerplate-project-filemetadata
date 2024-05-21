@@ -71,11 +71,7 @@ app.post('/api/upload', (req, res) => {
       };
 
       // Send the JSON response with file metadata
-      res.json({
-        name: fileInfo.name,
-        type: fileInfo.type,
-        size: fileInfo.size
-      });
+      res.json(fileInfo);
     } catch (error) {
       console.error('Error saving file metadata to MongoDB:', error);
       res.status(500).json({ error: 'Error saving file metadata to MongoDB' });
