@@ -48,6 +48,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/index.html'));
 });
 
+// Updated /api/upload route handler
 app.post('/api/upload', (req, res) => {
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
@@ -59,12 +60,12 @@ app.post('/api/upload', (req, res) => {
     }
 
     // File upload was successful. Save file metadata to MongoDB.
-    const { originalname, size } = req.file;
+    const { originalname, mimetype, size } = req.file;
 
     try {
-      const newFile = new File({ name: originalname, size: size });
+      const newFile = new File({ name: originalname, type: mimetype, size: size });
       await newFile.save();
-      res.json({ name: originalname, size: size });
+      res.json({ name: originalname, type: mimetype, size: size });
     } catch (error) {
       console.error('Error saving file metadata to MongoDB:', error);
       res.status(500).json({ error: 'Error saving file metadata to MongoDB' });
