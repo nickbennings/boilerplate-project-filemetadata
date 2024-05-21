@@ -21,6 +21,7 @@ db.once('open', () => {
 // Define a Schema for file metadata
 const FileSchema = new mongoose.Schema({
   name: String,
+  type: String,
   size: Number,
   date: { type: Date, default: Date.now }
 });
@@ -41,14 +42,13 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage }).single('file');
+const upload = multer({ storage: storage }).single('upfile');
 
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/index.html'));
 });
 
-// Updated /api/upload route handler
 app.post('/api/upload', (req, res) => {
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
@@ -65,12 +65,15 @@ app.post('/api/upload', (req, res) => {
     try {
       const newFile = new File({ name: originalname, type: mimetype, size: size });
       await newFile.save();
-      // Send JSON response with file metadata
       res.json({ name: originalname, type: mimetype, size: size });
     } catch (error) {
       console.error('Error saving file metadata to MongoDB:', error);
-      // Send JSON response in case of error
       res.status(500).json({ error: 'Error saving file metadata to MongoDB' });
     }
   });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
