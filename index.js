@@ -62,6 +62,11 @@ app.post('/api/upload', (req, res) => {
     // File upload was successful. Save file metadata to MongoDB.
     const { originalname, mimetype, size } = req.file;
 
+    console.log('File uploaded successfully:');
+    console.log('File name:', originalname);
+    console.log('File type:', mimetype);
+    console.log('File size:', size);
+
     try {
       // Construct the response object with file metadata
       const fileInfo = {
@@ -69,6 +74,8 @@ app.post('/api/upload', (req, res) => {
         type: mimetype,
         size: size
       };
+
+      console.log('Sending JSON response with file metadata:', fileInfo);
 
       // Send the JSON response with file metadata
       res.json(fileInfo);
